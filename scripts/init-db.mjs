@@ -70,6 +70,7 @@ async function main() {
       \`tags\` text,
       \`keywords\` text,
       \`excerpt\` text,
+      \`coverImageUrl\` text,
       \`createdAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
       \`updatedAt\` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY (\`id\`)
@@ -140,6 +141,11 @@ async function main() {
     `INSERT IGNORE INTO users (openId, username, passwordHash, name, loginMethod, role) VALUES (?, ?, ?, ?, 'local', 'admin')`,
     ['local_admin_1', 'admin', hash, '管理員']
   );
+
+  // 加入新欄位（如果不存在）
+  try {
+    await conn.execute("ALTER TABLE articles ADD COLUMN IF NOT EXISTS `coverImageUrl` text");
+  } catch {}
 
   console.log('[Init DB] ✅ Done! Default admin: admin / admin123');
   await conn.end();

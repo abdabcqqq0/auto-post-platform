@@ -74,6 +74,7 @@ type ArticleItem = {
   tags: string | null;
   keywords: string | null;
   excerpt: string | null;
+  coverImageUrl: string | null;
   createdAt: Date;
 };
 
@@ -401,6 +402,9 @@ export default function ArticlesPage() {
                   <div key={article.id} className="hover:bg-muted/30 transition-colors">
                     {/* 手機版：兩行佈局 */}
                     <div className="flex flex-col gap-2 px-4 py-4 sm:hidden">
+                      {(article as any).coverImageUrl && (
+                        <img src={(article as any).coverImageUrl} alt={article.title} className="w-full h-32 object-cover rounded-md border border-border" />
+                      )}
                       <div className="min-w-0">
                         <p className="text-sm font-semibold">{article.title}</p>
                         <div className="flex items-center gap-2 mt-1.5 flex-wrap">
@@ -425,6 +429,9 @@ export default function ArticlesPage() {
 
                     {/* 桌機版：單行，按鈕在右側 */}
                     <div className="hidden sm:flex items-center gap-3 px-4 py-3">
+                      {(article as any).coverImageUrl && (
+                        <img src={(article as any).coverImageUrl} alt={article.title} className="w-16 h-12 object-cover rounded border border-border shrink-0" />
+                      )}
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-semibold truncate">{article.title}</p>
                         <div className="flex items-center gap-2 mt-1 flex-wrap">

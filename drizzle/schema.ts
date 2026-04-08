@@ -71,6 +71,7 @@ export const articles = mysqlTable("articles", {
   tags: text("tags"),
   keywords: text("keywords"),
   excerpt: text("excerpt"),
+  coverImageUrl: text("coverImageUrl"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

@@ -294,8 +294,8 @@ async function uploadImageToWordPress(
       body: buffer,
     });
     if (!response.ok) return null;
-    const media = await response.json() as { id?: number };
-    return media.id ?? null;
+    const media = await response.json() as { id?: number; source_url?: string };
+    return media.id ? { id: media.id, url: media.source_url ?? "" } : null;
   } catch {
     return null;
   }
@@ -308,7 +308,7 @@ async function publishToWordPress(
   articleTags?: string,
   articleKeywords?: string,
   articleExcerpt?: string
-): Promise<{ success: boolean; url?: string; postId?: number; error?: string }> {
+): Promise<{ success: boolean; url?: string; postId?: number; coverImageUrl?: string; error?: string }> {
   const wpUrl = settings["wp_url"];
   const wpUsername = settings["wp_username"];
   const wpPassword = settings["wp_password"];
@@ -357,8 +357,11 @@ async function publishToWordPress(
   if (geminiApiKey && autoImage) {
     const dataUrl = await generateCoverImage(title, geminiApiKey);
     if (dataUrl) {
-      const mediaId = await uploadImageToWordPress(dataUrl, title, credentials, wpUrl);
-      if (mediaId) postData.featured_media = mediaId;
+      const mediaResult = await uploadImageToWordPress(dataUrl, title, credentials, wpUrl);
+      if (mediaResult) {
+        postData.featured_media = mediaResult.id;
+        postData._coverImageUrl = mediaResult.url;
+      }
     }
   }
 
@@ -378,7 +381,12 @@ async function publishToWordPress(
   }
 
   const wpPost = await response.json() as { id?: number; link?: string };
-  return { success: true, url: wpPost.link ?? "", postId: wpPost.id };
+  return {
+    success: true,
+    url: wpPost.link ?? "",
+    postId: wpPost.id,
+    coverImageUrl: (postData._coverImageUrl as string) || undefined,
+  };
 }
 
 // ─── 主要 API ─────────────────────────────────────────────────────────────────
@@ -464,7 +472,7 @@ export async function runAutoPost(siteId: number = 1): Promise<{
       articleKeywords || undefined,
       articleExcerpt || undefined
     );
-    if (articleId) await updateArticle(articleId, { wpStatus: "published", publishedUrl: wpResult.url, wpPostId: wpResult.postId });
+    if (articleId) await updateArticle(articleId, { wpStatus: "published", publishedUrl: wpResult.url, wpPostId: wpResult.postId, ...(wpResult.coverImageUrl ? { coverImageUrl: wpResult.coverImageUrl } : {}) });
     await updateTitle(titleRow.id, { status: "completed" });
     await createLog({ siteId, titleId: titleRow.id, articleId, action: "wp_publish", status: "success", message: `WordPress 發布成功，文章 URL：${wpResult.url}` });
     await notifyOwner({ title: "✅ 自動發文成功", content: `標題：${titleRow.title}\n發布網址：${wpResult.url}` });
@@ -554,7 +562,7 @@ export async function republishArticle(articleId: number, siteId: number = 1, op
       article.keywords ?? undefined,
       article.excerpt ?? undefined
     );
-    await updateArticle(articleId, { wpStatus: "published", publishedUrl: wpResult.url, wpPostId: wpResult.postId });
+    await updateArticle(articleId, { wpStatus: "published", publishedUrl: wpResult.url, wpPostId: wpResult.postId, ...(wpResult.coverImageUrl ? { coverImageUrl: wpResult.coverImageUrl } : {}) });
     await createLog({ siteId, articleId, action: "wp_republish", status: "success", message: `重新發布成功：${wpResult.url}`, operator });
     // Telegram 通知
     sendPublishSuccessNotification({ title: article.title ?? "", url: wpResult.url ?? "" }).catch(() => {});
