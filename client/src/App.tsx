@@ -14,6 +14,7 @@ import TelegramSettingsPage from "./pages/TelegramSettings";
 import PromptTemplatePage from "./pages/PromptTemplate";
 import SitesPage from "./pages/Sites";
 import AdminUsersPage from "./pages/AdminUsers";
+import ImageGenPage from "./pages/ImageGen";
 import LoginPage from "./pages/LoginPage";
 import { useAuth } from "./_core/hooks/useAuth";
 
@@ -49,6 +50,7 @@ function ProtectedRouter() {
         <Route path="/prompt-template" component={PromptTemplatePage} />
         <Route path="/sites" component={SitesPage} />
         <Route path="/admin/users" component={AdminUsersPage} />
+        <Route path="/image-gen" component={ImageGenPage} />
         <Route path="/404" component={NotFound} />
         <Route component={NotFound} />
       </Switch>

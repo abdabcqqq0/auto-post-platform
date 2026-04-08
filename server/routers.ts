@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { COOKIE_NAME } from "@shared/const";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { imageGenRouter } from "./imageGen";
 import {
   addChatMessage,
   clearChatHistory,
@@ -973,6 +974,7 @@ ${input.instruction}
         }
       }),
   }),
+  imageGen: imageGenRouter,
 });
 
 export type AppRouter = typeof appRouter;

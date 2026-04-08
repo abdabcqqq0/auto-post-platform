@@ -24,7 +24,7 @@ import { getLoginUrl } from "@/const";
 import { useSite } from "@/contexts/SiteContext";
 import { useIsMobile } from "@/hooks/useMobile";
 import { trpc } from "@/lib/trpc";
-import { LayoutList, FileText, Zap, Globe, ScrollText, LogOut, PanelLeft, MessageSquare, Send, FileCode, Sun, Moon, ChevronDown, Building2, Plus, Check, UserCog } from "lucide-react";
+import { LayoutList, FileText, Zap, Globe, ScrollText, LogOut, PanelLeft, MessageSquare, Send, FileCode, Sun, Moon, ChevronDown, Building2, Plus, Check, UserCog, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
@@ -42,6 +42,7 @@ const menuItems = [
   { icon: Send, label: "Telegram 通知", path: "/telegram-settings" },
   { icon: ScrollText, label: "執行日誌", path: "/logs" },
   { icon: UserCog, label: "帳號管理", path: "/admin/users" },
+  { icon: ImageIcon, label: "AI 製圖", path: "/image-gen" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
