@@ -200,7 +200,6 @@ async function generateContent(
         body: JSON.stringify({
           contents: [{ parts: [{ text: fullPrompt }] }],
           generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
-          thinkingConfig: { thinkingBudget: 0 },
         }),
       }
     );
