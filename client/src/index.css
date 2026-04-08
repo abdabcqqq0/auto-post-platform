@@ -1,0 +1,97 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --font-sans: 'Inter', 'Noto Sans TC', ui-sans-serif, system-ui, sans-serif;
+  --radius: 0.65rem;
+  --color-background: oklch(1 0 0);
+  --color-foreground: oklch(0.235 0.01 260);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.235 0.01 260);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.235 0.01 260);
+  --color-primary: oklch(0.4 0.15 264);
+  --color-primary-foreground: oklch(0.97 0.01 264);
+  --color-secondary: oklch(0.96 0.005 264);
+  --color-secondary-foreground: oklch(0.3 0.01 264);
+  --color-muted: oklch(0.967 0.003 264);
+  --color-muted-foreground: oklch(0.552 0.015 264);
+  --color-accent: oklch(0.967 0.003 264);
+  --color-accent-foreground: oklch(0.3 0.01 264);
+  --color-destructive: oklch(0.577 0.22 27);
+  --color-destructive-foreground: oklch(0.98 0 0);
+  --color-border: oklch(0.92 0.004 264);
+  --color-input: oklch(0.92 0.004 264);
+  --color-ring: oklch(0.4 0.15 264);
+  --color-sidebar: oklch(0.985 0.002 264);
+  --color-sidebar-foreground: oklch(0.235 0.01 260);
+  --color-sidebar-primary: oklch(0.4 0.15 264);
+  --color-sidebar-primary-foreground: oklch(0.97 0.01 264);
+  --color-sidebar-accent: oklch(0.96 0.005 264);
+  --color-sidebar-accent-foreground: oklch(0.3 0.01 264);
+  --color-sidebar-border: oklch(0.92 0.004 264);
+  --color-sidebar-ring: oklch(0.4 0.15 264);
+}
+
+.dark {
+  --color-background: oklch(0.141 0.008 264);
+  --color-foreground: oklch(0.85 0.01 264);
+  --color-card: oklch(0.21 0.01 264);
+  --color-card-foreground: oklch(0.85 0.01 264);
+  --color-popover: oklch(0.21 0.01 264);
+  --color-popover-foreground: oklch(0.85 0.01 264);
+  --color-primary: oklch(0.55 0.18 264);
+  --color-primary-foreground: oklch(0.97 0.01 264);
+  --color-secondary: oklch(0.274 0.012 264);
+  --color-secondary-foreground: oklch(0.85 0.01 264);
+  --color-muted: oklch(0.274 0.012 264);
+  --color-muted-foreground: oklch(0.705 0.015 264);
+  --color-accent: oklch(0.274 0.012 264);
+  --color-accent-foreground: oklch(0.85 0.01 264);
+  --color-destructive: oklch(0.704 0.22 27);
+  --color-destructive-foreground: oklch(0.98 0 0);
+  --color-border: oklch(1 0 0 / 10%);
+  --color-input: oklch(1 0 0 / 15%);
+  --color-ring: oklch(0.55 0.18 264);
+  --color-sidebar: oklch(0.18 0.01 264);
+  --color-sidebar-foreground: oklch(0.85 0.01 264);
+  --color-sidebar-primary: oklch(0.55 0.18 264);
+  --color-sidebar-primary-foreground: oklch(0.97 0.01 264);
+  --color-sidebar-accent: oklch(0.274 0.012 264);
+  --color-sidebar-accent-foreground: oklch(0.85 0.01 264);
+  --color-sidebar-border: oklch(1 0 0 / 10%);
+  --color-sidebar-ring: oklch(0.55 0.18 264);
+}
+
+@layer base {
+  * { border-color: var(--color-border); box-sizing: border-box; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  button, [role="button"], a, select,
+  [type="checkbox"], [type="radio"],
+  [type="submit"], [type="button"] { cursor: pointer; }
+  input, textarea { cursor: text; }
+  [disabled], [aria-disabled="true"] { cursor: not-allowed; }
+}
+
+@layer utilities {
+  [data-active=true][data-sidebar=menu-button] {
+    background-color: var(--color-sidebar-accent);
+    color: var(--color-sidebar-accent-foreground);
+    font-weight: 500;
+  }
+  [data-active=true][data-sidebar=menu-button] svg {
+    color: var(--color-primary);
+  }
+  [data-sidebar=menu-button]:hover {
+    background-color: var(--color-sidebar-accent);
+    color: var(--color-sidebar-accent-foreground);
+  }
+  [data-sidebar=sidebar] {
+    background-color: var(--color-sidebar);
+  }
+}
