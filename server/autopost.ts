@@ -22,7 +22,7 @@ const DEFAULT_PROMPT_TEMPLATE = `請根據以下標題，撰寫一篇高品質�
 - 文章長度約 800～1200 字
 - 使用清晰的段落結構，包含引言、主體（3～4 段）與結語
 - 語氣專業但易讀，適合一般讀者
-- 每個段落可加入小標題（不要使用 ## 格式）
+- 每個段落可加入小標題（使用 ## 格式）
 - 內容豐富、有見解，避免空洞的陳述
 - 請直接輸出文章內容，不需要額外說明`;
 
@@ -81,9 +81,11 @@ async function generateTagsAndKeywords(
       );
       if (response.ok) {
         const data = await response.json() as {
-          candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+          candidates?: Array<{ content?: { parts?: Array<{ text?: string; thought?: boolean }> } }>;
         };
-        jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+        const tagParts = data.candidates?.[0]?.content?.parts ?? [];
+        jsonText = tagParts.filter(p => !p.thought && p.text).map(p => p.text ?? "").join("")
+          || tagParts.map(p => p.text ?? "").join("");
       }
     } else {
       const llmResponse = await invokeLLM({
@@ -144,9 +146,11 @@ async function generateExcerpt(
       );
       if (response.ok) {
         const data = await response.json() as {
-          candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+          candidates?: Array<{ content?: { parts?: Array<{ text?: string; thought?: boolean }> } }>;
         };
-        excerptText = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+        const excerptParts = data.candidates?.[0]?.content?.parts ?? [];
+        excerptText = excerptParts.filter(p => !p.thought && p.text).map(p => p.text ?? "").join("")
+          || excerptParts.map(p => p.text ?? "").join("");
       }
     } else {
       const llmResponse = await invokeLLM({
@@ -196,6 +200,7 @@ async function generateContent(
         body: JSON.stringify({
           contents: [{ parts: [{ text: fullPrompt }] }],
           generationConfig: { temperature: 0.7, maxOutputTokens: 4096 },
+          thinkingConfig: { thinkingBudget: 0 },
         }),
       }
     );
@@ -203,10 +208,12 @@ async function generateContent(
       throw new Error(`Gemini API 錯誤: ${response.status} ${await response.text()}`);
     }
     const data = await response.json() as {
-      candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+      candidates?: Array<{ content?: { parts?: Array<{ text?: string; thought?: boolean }> } }>;
     };
-    const content = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-    if (!content) throw new Error("Gemini 回應內容為空");
+    const parts = data.candidates?.[0]?.content?.parts ?? [];
+    const content = parts.filter(p => !p.thought && p.text).map(p => p.text ?? "").join("")
+      || parts.map(p => p.text ?? "").join("");
+    if (!content.trim()) throw new Error("Gemini 回應內容為空");
     return content;
   } else {
     const llmResponse = await invokeLLM({
