@@ -80,6 +80,9 @@ jspm_packages/
 # Yarn Integrity file
 .yarn-integrity
 
+# npm lock file (this project uses pnpm)
+package-lock.json
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
