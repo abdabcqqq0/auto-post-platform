@@ -273,7 +273,7 @@ async function uploadImageToWordPress(
   title: string,
   credentials: string,
   wpUrl: string
-): Promise<number | null> {
+): Promise<{ id: number; url: string } | null> {
   try {
     const matches = dataUrl.match(/^data:(.+);base64,(.+)$/);
     if (!matches) return null;
